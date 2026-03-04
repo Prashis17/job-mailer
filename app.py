@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_file
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -9,7 +9,7 @@ app = Flask(__name__, static_folder=".")
 # ── Static sender credentials ──────────────────────────────────────────────
 # On Render: set GMAIL_USER and GMAIL_PASS as environment variables
 SENDER_EMAIL = os.environ.get("GMAIL_USER", "prashisshirsat17@gmail.com")
-SENDER_PASSWORD = os.environ.get("GMAIL_PASS", "Pr@shis$17")  # replace with App Password
+SENDER_PASSWORD = os.environ.get("GMAIL_PASS", "cxwavbahiyfkpzgk")  # Gmail App Password
 
 # ── Static email content ───────────────────────────────────────────────────
 SUBJECT = "Why I'm the PM You Didn't Know You Needed (Yet!) 🚀"
@@ -64,7 +64,9 @@ Best,<br>
 
 @app.route("/")
 def index():
-    return send_from_directory(".", "index.html")
+    # Fix for "Not Found" error on Render: use absolute path based on this file's location
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    return send_file(os.path.join(base_dir, "index.html"))
 
 @app.route("/send", methods=["POST"])
 def send_email():
