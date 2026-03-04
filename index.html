@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Application Mailer · Prashis Shirsat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0f1a;
+      --surface:   #151827;
+      --surface2:  #1c2035;
+      --border:    #252a42;
+      --accent:    #6c63ff;
+      --accent2:   #a78bfa;
+      --success:   #22d3a8;
+      --error:     #f87171;
+      --text:      #e8eaf6;
+      --muted:     #8890b5;
+      --radius:    16px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse at 20% 20%, rgba(108,99,255,.15) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 80%, rgba(167,139,250,.10) 0%, transparent 55%);
+    }
+
+    /* ── Card ── */
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.5);
+    }
+
+    /* ── Header ── */
+    .card-header {
+      background: linear-gradient(135deg, #1a1650 0%, #251e56 100%);
+      padding: 32px 36px 28px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(108,99,255,.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(108,99,255,.18);
+      border: 1px solid rgba(108,99,255,.4);
+      color: var(--accent2);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
+    .badge::before { content: '✉'; }
+    .card-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, #fff 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .card-header p {
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    /* ── Body ── */
+    .card-body { padding: 32px 36px; }
+
+    /* Static info pills */
+    .info-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 99px;
+    }
+    .pill span { color: var(--text); font-weight: 500; }
+
+    /* Subject preview */
+    .subject-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+    .subject-box .label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .subject-box .subject-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Input group */
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: .3px;
+    }
+    .input-wrap {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .input-wrap .icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14.5px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .input-wrap input::placeholder { color: #454e72; }
+    .input-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,99,255,.15);
+    }
+
+    /* Toggle preview */
+    .toggle-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all .2s;
+    }
+    .toggle-btn:hover { border-color: var(--accent); color: var(--accent2); }
+
+    .preview-box {
+      display: none;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: #c8cde8;
+      margin-bottom: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .preview-box.open { display: block; }
+    .preview-box p { margin-bottom: 10px; }
+    .preview-box strong { color: var(--text); }
+    .preview-box a { color: var(--accent2); }
+
+    /* Send button */
+    .send-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 6px 24px rgba(108,99,255,.35);
+      letter-spacing: .3px;
+    }
+    .send-btn:hover  { opacity: .92; transform: translateY(-1px); box-shadow: 0 10px 30px rgba(108,99,255,.45); }
+    .send-btn:active { transform: translateY(0); }
+    .send-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      transition: all .35s cubic-bezier(.34,1.56,.64,1);
+      z-index: 999;
+      white-space: nowrap;
+      box-shadow: 0 8px 30px rgba(0,0,0,.4);
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    #toast.success { background: #064e3b; border: 1px solid #065f46; color: var(--success); }
+    #toast.error   { background: #450a0a; border: 1px solid #7f1d1d; color: var(--error); }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- HEADER -->
+  <div class="card-header">
+    <div class="badge">Job Application Mailer</div>
+    <h1>Send Your Application 🚀</h1>
+    <p>One click to send your pre-crafted APM/PM pitch email</p>
+  </div>
+
+  <!-- BODY -->
+  <div class="card-body">
+
+    <!-- Static sender info -->
+    <div class="info-strip">
+      <div class="pill">From: <span>Prashis Shirsat</span></div>
+      <div class="pill">📧 <span>prashisshirsat17@gmail.com</span></div>
+      <div class="pill">🔗 <span>LinkedIn attached</span></div>
+      <div class="pill">📄 <span>Resume attached</span></div>
+    </div>
+
+    <!-- Subject -->
+    <div class="subject-box">
+      <div class="label">Subject Line</div>
+      <div class="subject-text">Why I'm the PM You Didn't Know You Needed (Yet!) 🚀</div>
+    </div>
+
+    <!-- Recipient input -->
+    <label class="field-label" for="to">Recipient (HR / Recruiter) Email</label>
+    <div class="input-wrap">
+      <span class="icon">🎯</span>
+      <input id="to" type="email" placeholder="recruiter@company.com" autocomplete="off" />
+    </div>
+
+    <!-- Preview toggle -->
+    <button class="toggle-btn" id="toggleBtn" onclick="togglePreview()">👁 Preview Email</button>
+    <div class="preview-box" id="preview">
+      <p>Hey,</p>
+      <p>When I came across your organization's APM/PM opening, I knew I had to shoot my shot—think of this email as my <strong>Steph Curry moment in the fourth quarter</strong>. 🏀</p>
+      <p>🔵 <strong>User-Obsessed & Data-Driven</strong> – I don't just analyze data; I <em>live</em> in it. At <strong>BharatPe</strong>, I managed the RTO project, reducing failed deliveries by 25% and cutting costs by 20%. At <strong>Freshworks</strong>, I boosted efficiency by 20% and adoption by 15%.</p>
+      <p>🔵 <strong>Master of the Cross-Functional Hustle</strong> – At <strong>IndusInd Bank</strong>, my strategies drove a 21% portfolio surge and a 33% conversion rate.</p>
+      <p>🔵 <strong>Creative Problem-Solver</strong> – At <strong>MakeMyTrip</strong>, I designed a multi-modal travel booking experience that made switching transport modes seamless.</p>
+      <p>So, what do you say? Let's chat — I'd love to discuss how I can help your organization level up.</p>
+      <p>📄 <a href="https://drive.google.com/file/d/1hG_vFCKwX0Cn0dsayjOmrYc3LahbaGk1/view?usp=sharing" target="_blank">View My Resume</a></p>
+      <p>Best,<br><strong>Prashis Shirsat</strong><br>📧 prashisshirsat17@gmail.com<br>🔗 <a href="https://www.linkedin.com/in/prashis-shirsat-522ab2173/" target="_blank">LinkedIn</a></p>
+    </div>
+
+    <!-- Send button -->
+    <button class="send-btn" id="sendBtn" onclick="sendEmail()">
+      <span id="btnText">🚀 Send Application</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  function togglePreview() {
+    const box = document.getElementById('preview');
+    const btn = document.getElementById('toggleBtn');
+    box.classList.toggle('open');
+    btn.textContent = box.classList.contains('open') ? '🙈 Hide Preview' : '👁 Preview Email';
+  }
+
+  async function sendEmail() {
+    const to = document.getElementById('to').value.trim();
+    if (!to) { showToast('Please enter a recipient email address.', 'error'); return; }
+
+    const btn     = document.getElementById('sendBtn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btnText');
+
+    btn.disabled = true;
+    spinner.style.display = 'block';
+    btnText.textContent = 'Sending…';
+
+    try {
+      const res  = await fetch('/send', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ to_email: to })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showToast(data.message, 'success');
+        document.getElementById('to').value = '';
+      } else {
+        showToast(data.message || 'Something went wrong.', 'error');
+      }
+    } catch (e) {
+      showToast('Could not reach the server. Is app.py running?', 'error');
+    } finally {
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      btnText.textContent = '🚀 Send Application';
+    }
+  }
+
+  // Allow Enter key to send
+  document.getElementById('to').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendEmail();
+  });
+
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `show ${type}`;
+    setTimeout(() => { t.className = ''; }, 4000);
+  }
+</script>
+</body>
+</html>
